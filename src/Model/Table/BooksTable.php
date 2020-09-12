@@ -44,6 +44,8 @@ class BooksTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->hasMany('Posts');
     }
 
     /**
