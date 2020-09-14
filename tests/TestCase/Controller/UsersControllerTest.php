@@ -24,16 +24,16 @@ class UsersControllerTest extends TestCase
     protected $fixtures = [
         'app.Users',
     ];
-
-    /**
-     * Test index method
-     *
-     * @return void
-     */
-    public function testIndex(): void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
+    //
+    // /**
+    //  * Test index method
+    //  *
+    //  * @return void
+    //  */
+    // public function testIndex(): void
+    // {
+    //     $this->markTestIncomplete('Not implemented yet.');
+    // }
 
     /**
      * Test view method

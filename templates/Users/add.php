@@ -4,29 +4,22 @@
  * @var \Cake\Datasource\EntityInterface $user
  */
 ?>
-<div class="row">
-    <aside class="column">
-        <div class="side-nav">
-            <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('List Users'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-        </div>
-    </aside>
-    <div class="column-responsive column-80">
-        <div class="users form content">
-            <?= $this->Form->create($user) ?>
-            <fieldset>
-                <legend><?= __('Add User') ?></legend>
-                <?php
-                    echo $this->Form->control('username');
-                    echo $this->Form->control('email');
-                    echo $this->Form->control('password');
-                    echo $this->Form->control('image');
-                    echo $this->Form->control('role');
-                    echo $this->Form->control('status');
-                ?>
-            </fieldset>
-            <?= $this->Form->button(__('Submit')) ?>
-            <?= $this->Form->end() ?>
-        </div>
+<main>
+  <div id="login_container">
+    <p id="login_index">Smart Book Shelf</p>
+    <div id="icon">
+      <i class="fas fa-book-open"></i>
     </div>
-</div>
+          <?= $this->Form->create($user) ?>
+          <fieldset>
+              <?=
+                  $this->Form->control('username', ['label' => false, 'placeholder' => 'name']),
+                  $this->Form->control('email', ['label' => false, 'placeholder' => 'email']),
+                  $this->Form->control('password', ['label' => false, 'placeholder' => 'password']),
+                  $this->Form->submit('登　　録', ['class' => "btn btn-warning"]);
+              ?>
+          </fieldset>
+          <?= $this->Form->end() ?>
+      <?= $this->HTML->link('アカウントをお持ちの方', '/users/login', ['class'=>'grayLink']) ?>
+    </div>
+  </main>

@@ -11,25 +11,43 @@ namespace App\Controller;
 class UsersController extends AppController
 {
 
+  // ページネーションのオプション設定
+  public $paginate = [
+    'limit' => 8,
+    'order' => [
+      'create' => 'desc'
+    ],
+    'contain' => ['Posts', 'Books']
+  ];
+
+  // コントローラー名以外のモデルを使用する場合（editアクション部分）はloadModelでモデルを読み込む必要がある。
+  // このクラス全体で使用するため、initializeメソッドに記述する。
+  public function initialize():void
+  {
+    parent::initialize();
+    $this->loadModel('Posts');
+    $this->loadModel('Books');
+  }
+
   public function beforeFilter(\Cake\Event\EventInterface $event)
   {
       parent::beforeFilter($event);
       // 認証を必要としないログインアクションを構成し、
       // 無限リダイレクトループの問題を防ぎます
-      $this->Authentication->addUnauthenticatedActions(['login', 'add']);
+      $this->Authentication->addUnauthenticatedActions(['login', 'add', 'forget']);
   }
 
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|null|void Renders view
-     */
-    public function index()
-    {
-        $users = $this->paginate($this->Users);
-
-        $this->set(compact('users'));
-    }
+    // /**
+    //  * Index method
+    //  *
+    //  * @return \Cake\Http\Response|null|void Renders view
+    //  */
+    // public function index()
+    // {
+    //     $users = $this->paginate($this->Users);
+    //
+    //     $this->set(compact('users'));
+    // }
 
     /**
      * View method
@@ -54,6 +72,8 @@ class UsersController extends AppController
      */
     public function add()
     {
+      $this->viewBuilder()->setLayout('beforelogin');
+
         $user = $this->Users->newEmptyEntity();
         if ($this->request->is('post')) {
             $user = $this->Users->patchEntity($user, $this->request->getData());
@@ -111,8 +131,38 @@ class UsersController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
+    public function main(){
+      if (isset($_GET['id'])) {
+        $id = $_GET['id'];
+      }else{
+        $user = $this->request->getAttribute('identity');
+        $id = $user->id;
+      }
+      $posts = $this->Posts
+        ->find()
+        ->order(['created'=>'desc'])
+        ->where(['user_id' => $id])
+        ->join([
+          'table'=>'books',
+          'alias'=>'b',
+          'type'=>'left',
+          'conditions'=> 'b.id = Posts.book_id'
+        ])->select([
+          'bookname' => 'b.bookname',
+          'image' => 'b.image',
+          'recommends' => 'Posts.recommends',
+          'created' => 'Posts.created'
+        ]);
+      //sqlでposts取得、joinでbooks.image取得
+
+      $this->set(compact('posts'));
+
+    }
+
     public function login()
     {
+      $this->viewBuilder()->setLayout('beforelogin');
+
         $this->request->allowMethod(['get', 'post']);
         $result = $this->Authentication->getResult();
         // POST, GET を問わず、ユーザーがログインしている場合はリダイレクトします
@@ -120,7 +170,7 @@ class UsersController extends AppController
             // redirect to /articles after login success
             $redirect = $this->request->getQuery('redirect', [
                 'controller' => 'users',
-                'action' => 'index',
+                'action' => 'main',
             ]);
 
             return $this->redirect($redirect);
@@ -139,6 +189,11 @@ class UsersController extends AppController
             $this->Authentication->logout();
             return $this->redirect(['controller' => 'Users', 'action' => 'login']);
         }
+    }
+
+    public function forget(){
+      $this->viewBuilder()->setLayout('beforelogin');
+
     }
 
 
