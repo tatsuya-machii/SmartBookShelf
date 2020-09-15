@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 namespace App\Controller;
-
 /**
  * Users Controller
  *
@@ -132,6 +131,8 @@ class UsersController extends AppController
     }
 
     public function main(){
+      $this->viewBuilder()->setLayout('main');
+
       if (isset($_GET['id'])) {
         $id = $_GET['id'];
       }else{
@@ -148,6 +149,7 @@ class UsersController extends AppController
           'type'=>'left',
           'conditions'=> 'b.id = Posts.book_id'
         ])->select([
+          'id' => 'Posts.id',
           'bookname' => 'b.bookname',
           'image' => 'b.image',
           'recommends' => 'Posts.recommends',

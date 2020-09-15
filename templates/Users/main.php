@@ -18,7 +18,7 @@
           </div>
             <div class="col-lg-2 col-sm-2 col-xs-12">
               <?php if (empty($_GET["user_id"]) || $_GET["user_id"] == $_SESSION["user"]["id"]){ ?>
-                <?php if (isset($_SESSION["user"]["image"]) && file_exists("../../img/users/".$_SESSION["user"]["image"])){ ?>
+                <?php if (isset($_SESSION["user"]["image"]) && file_exists("../../wabroot/img/users/".$_SESSION["user"]["image"])){ ?>
                   <img class="user_icon" src="../../img/users/<?php echo $_SESSION["user"]["id"]; ?>.jpg" alt="ユーザーアイコン"><!-- $user_image -->
                 <?php }else{ ?>
                     <i class="fas fa-user main_icon"></i><!-- $user_image -->
@@ -46,7 +46,7 @@
             </div>
             <div class="col-lg-2 col-md-2 col-sm-3 col-lg-offset-10 col-md-offset-10 col-sm-offset-9 text-right">
               <?php if (empty($_GET["user_id"]) || $_GET["user_id"] == $_SESSION["user"]["id"]){ ?>
-                <a class="edit_link" href="user_edit.php">編集する</a>
+                <?= $this->Html->link('編集する', '/users/edit/'.$_SESSION['Auth']['id'], ['class' => 'edit_link']) ?>
               <?php }else{ ?>
                 <div id="friend_add"></div>
               <?php }; ?>
@@ -71,11 +71,11 @@
                   <div class="book_container">
                     <div class="book_image">
                       <?php if (isset($post['image'])){ ?>
-                        <p><?= $this->HTML->image('default/default.jpg'); ?></p>
+                        <p><?= $this->HTML->image('base/default.jpg',array('width'=> '100px', 'height'=> '100px')); ?></p>
+                        <p><?= $this->HTML->image('base/default.jpg'); ?></p>
                         <?= h($post->image) ?>
                       <?php }else{ ?>
-
-                        <p><?= $this->HTML->image('default/default.jpg',array('width'=> '100px', 'height'=> '100px')); ?></p>
+                        <i class="fas fa-book-open"></i>
                       <?php } ?>
 
                     </div>
@@ -95,7 +95,10 @@
                       </span>
                     </p>
                     <p>追加日時：<?= h($post['created']) ?></p>
-                    <p><a href="">詳しく見る</a></p>
+
+                    <p>
+                      <?= $this->Html->link('詳しく見る', '/posts/view/'.$post['id']); ?>
+                    </p>
                   </div>
                 <?php endforeach ?>
 
@@ -105,5 +108,6 @@
         </div>
       </div>
     </section>
+    <p><?= ($_SESSION['Auth']['id']); ?></p>
 
   </main>

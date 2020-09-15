@@ -26,7 +26,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
   <!-- js読み込み -->
   <?= $this->Html->script(['jquery', 'bootstrap'])?>
-  <?= $this->Html->css(['login', 'base', 'bootstrap']) ?>
+  <!-- css読み込み -->
+  <?= $this->Html->css(['main', 'base', 'bootstrap']) ?>
   <title>Smart Book Shelf</title>
   <body>
     <header>
@@ -36,12 +37,34 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
           <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
               <div class="navbar-header">
-                  <a class="navbar-brand" href="#">
-                    <i class="fas fa-book-open"></i>
-                    <?= $this->Html->link('Smart Book Shelf', '/users/login', ['class' => 'navbar-brand']); ?>
-                  </a>
+                  <a class="navbar-brand" href="#">  <i class="fas fa-book-open"></i>Smart Book Shelf</a>
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#gnav">
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                  </button>
               </div>
-            </div>
+              <div class="collapse navbar-collapse" id="gnav">
+                  <ul class="nav navbar-nav navbar-right">
+                    <?php if ($_SESSION["Auth"]["id"]==1){ ?>
+                      <li><a href="../admin/main.php"><?php echo $_SESSION["Auth"]["username"] ?></a></li>
+                      <li>
+                        <?= $this->Html->link('ログアウト', ['controller' => 'users', 'action' => 'logout', '?' => ['logout' => 1] ]) ?>
+                      </li>
+                    <?php }else{ ?>
+
+
+                      <li><?= $this->HTML->link($_SESSION['Auth']['username'], '/users/main') ?></li>
+                      <li>
+                        <?= $this->Html->link('投稿一覧', ['controller' => 'posts', 'action' => 'index']) ?>
+                      </li>
+                      <li>
+                        <?= $this->Html->link('ログアウト', ['controller' => 'users', 'action' => 'logout', '?' => ['logout' => 1] ]) ?>
+                      </li>
+                    <?php }; ?>
+                  </ul>
+                </div><!-- /.navbar-collapse -->
+              </div>
           </nav>
       </div><!-- /container -->
     </header>

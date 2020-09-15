@@ -35,6 +35,8 @@ class PostsController extends AppController
      */
     public function index()
     {
+      $this->viewBuilder()->setLayout('beforelogin');
+
         $posts = $this->paginate($this->Posts);
 
         $this->set(compact('posts'));
@@ -122,5 +124,119 @@ class PostsController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    // ajax--------------------------------------------------------------------------
+    public function ajax(){
+      //CakePHPのレンダー機能を無効化する
+      $this->autoRender = false;
+      //Ajax通信か判定する
+      if ($this->request->is('ajax')) {
+
+        // 必要な変数の定義
+        $posts = $this->Posts
+          ->find()
+          ->order(['created'=>'desc'])
+          ->join([
+            'table'=>'users',
+            'alias'=>'u',
+            'type'=>'left',
+            'conditions'=> 'u.id = Posts.user_id'
+          ])->join([
+            'table'=>'books',
+            'alias'=>'b',
+            'type'=>'left',
+            'conditions'=> 'b.id = Posts.book_id'
+          ])->select([
+            'id' => 'Posts.id',
+            'username' => 'u.username',
+            'userimage' => 'u.image',
+            'bookname' => 'b.bookname',
+            'bookimage' => 'b.image',
+            'recommends' => 'Posts.recommends',
+            'created' => 'Posts.created'
+          ]);
+
+
+        $searchTextUserName = $_GET["search_user_name"];
+        $searchTextBookName = $_GET["search_book_name"];
+        $targetText = "";
+        $searchResult = array();
+
+          foreach ($posts as $post) {
+            $add_flag=0;
+            if (!empty($searchTextUserName)) {
+              if (strpos($post["username"], $searchTextUserName) !== false) {
+                $add_flag ++;
+              };
+            }else{
+              $add_flag ++;
+            }
+            if (!empty($searchTextBookName)) {
+              if (strpos($post["bookname"], $searchTextBookName) !== false) {
+                $add_flag ++;
+              };
+            }else{
+              $add_flag ++;
+            }
+
+
+            // userimage
+            if ($post['userimage'] == null) {
+              $post['userimage'] = '<i class="fas fa-user small_icon"></i>';
+            };
+            // userimage
+            if ($post['bookimage'] == null) {
+              $post['bookimage'] = '<i class="fas fa-book-open small_icon"></i>';
+            };
+            // star
+            $on = null;
+            $off = null;
+            for ($j=0; $j <= $post["recommends"]; $j++){
+              $on .= '<img src="/SBS/webroot/img/base/star-on.png">';
+            };
+            if ($post["recommends"] < 5) {
+              for ($j=$post["recommends"]; $j < 5; $j++){
+                $off .= '<img src="/SBS/webroot/img/base/star-off.png">';
+              };
+            };
+            $post["recommends"] = $on.$off;
+
+
+
+
+
+
+
+            if ($add_flag == 2) {
+              $post = array(
+                'username'=>$post['username'],
+                'bookname'=>$post['bookname'],
+                'userimage'=>$post['userimage'],
+                'bookimage'=>$post['bookimage'],
+                'recommends'=>$post['recommends'],
+                'created'=>$post['created']
+              );
+              // // おすすめ度の星表記
+              // $on = null;
+              // $off = null;
+              // for ($j=0; $j <= $post["recommends"]; $j++){
+              //   $on .= $thi->Html->image('base/star-on.png');
+              // };
+              // if ($post["recommends"] < 5) {
+              //   for ($j=$post["recommends"]; $j < 5; $j++){
+              //     $off .= $thi->Html->image('base/star-off.png');
+              //   };
+              // };
+              // $post["recommends"] = $on.$off;
+              $searchResult[] = array_merge($post);
+            }
+          }
+
+          header("Content-Type: application/json; charset=utf-8");
+        // htmlへ渡す配列$resultをjsonに変換する
+        echo json_encode($searchResult);
+      }
+
     }
 }
