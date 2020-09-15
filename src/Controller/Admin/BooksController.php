@@ -12,6 +12,11 @@ use App\Controller\AppController;
  */
 class BooksController extends AppController
 {
+    public function initialize():void{
+      if ($_SESSION['Auth']['role'] != 1) {
+        return $this->redirect('/users/main');
+      }
+    }
     /**
      * Index method
      *
