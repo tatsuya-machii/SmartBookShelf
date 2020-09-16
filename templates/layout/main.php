@@ -56,10 +56,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
                       <li><?= $this->HTML->link($_SESSION['Auth']['username'], '/users/main') ?></li>
                       <li>
-                        <?= $this->Html->link('投稿一覧', ['controller' => 'posts', 'action' => 'index']) ?>
+                        <?= $this->Html->link('投稿一覧', '/posts/index') ?>
                       </li>
                       <li>
-                        <?= $this->Html->link('ログアウト', ['controller' => 'users', 'action' => 'logout', '?' => ['logout' => 1] ]) ?>
+                        <?= $this->Html->link('ログアウト', '/users/logout?logout=1') ?>
                       </li>
                     <?php }; ?>
                   </ul>

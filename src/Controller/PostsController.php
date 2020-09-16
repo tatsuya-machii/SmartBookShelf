@@ -14,7 +14,7 @@ class PostsController extends AppController
   public $paginate = [
     'limit' => 10,
     'order' => [
-      'create' => 'desc'
+      'created' => 'desc'
     ],
     'contain' => ['Users', 'Books']
   ];
@@ -35,7 +35,7 @@ class PostsController extends AppController
      */
     public function index()
     {
-      $this->viewBuilder()->setLayout('beforelogin');
+      $this->viewBuilder()->setLayout('main');
 
         $posts = $this->paginate($this->Posts);
 
@@ -92,6 +92,9 @@ class PostsController extends AppController
         $post = $this->Posts->get($id, [
             'contain' => [],
         ]);
+        // ↓ 投稿ユーザー以外は実行不可
+        $this->Authorization->authorize($post, 'update');
+
         if ($this->request->is(['patch', 'post', 'put'])) {
             $post = $this->Posts->patchEntity($post, $this->request->getData());
             if ($this->Posts->save($post)) {
@@ -117,6 +120,9 @@ class PostsController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $post = $this->Posts->get($id);
+        // ↓ 投稿ユーザー以外は実行不可
+        $this->Authorization->authorize($post, 'delete');
+
         if ($this->Posts->delete($post)) {
             $this->Flash->success(__('The post has been deleted.'));
         } else {
@@ -203,13 +209,9 @@ class PostsController extends AppController
             $post["recommends"] = $on.$off;
 
 
-
-
-
-
-
             if ($add_flag == 2) {
               $post = array(
+                'id'=>$post['id'],
                 'username'=>$post['username'],
                 'bookname'=>$post['bookname'],
                 'userimage'=>$post['userimage'],

@@ -18,6 +18,7 @@
     </aside>
     <div class="column-responsive column-80">
         <div class="posts form content">
+          <?= $this->Form->create($post) ?>
             <fieldset>
                 <legend><?= __('Edit Post') ?></legend>
                 <?php

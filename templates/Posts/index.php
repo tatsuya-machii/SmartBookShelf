@@ -48,7 +48,7 @@
                         <i class="fas fa-book-open small_icon"></i>
                     </p>
                     <p>
-                      <?= $this->Html->link(h($post->book->bookname), ['controller' => 'posts', 'action' => 'view', $this->Number->format($post->book_id)]) ?>
+                      <?= $this->Html->link(h($post->book->bookname), ['controller' => 'posts', 'action' => 'view', $this->Number->format($post->id)]) ?>
                     </p>
                   </td>
                   <td>
@@ -107,7 +107,7 @@ $(function(){
           var html = html + "</p><p>" + key["username"]+ "</p></td>";
           var html = html + "<td>";
           var html = html + "<p>" + key["bookimage"];
-          var html = html + "</p><p>" + key["bookname"] + "</p></td>";
+          var html = html + "</p><p><a href='/SBS/posts/view/" + key["id"] + "'>" + key["bookname"] + "</a></p></td>";
           var html = html + "<td><span class='range-group'" + key["recommends"] + "</span></td>";
           var html = html + "<td>" + key["created"] + "</td></tr>"
           $('#ajax_review_list').append(html);
