@@ -30,7 +30,7 @@ class AppController extends Controller
 {
   public function beforeFilter(\Cake\Event\EventInterface $event)
   {
-      // ↓ 下記を追加
+      // ↓ 　認証をスキップする
         $this->Authorization->skipAuthorization();
   }
 

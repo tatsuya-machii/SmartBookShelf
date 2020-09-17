@@ -43,6 +43,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             <a href="<?= $this->Url->build('/') ?>"><span>Cake</span>PHP</a>
         </div>
         <div class="top-nav-links">
+          <?= $this->HTML->link($_SESSION['Auth']['username'], '/users/main') ?>
+          <?= $this->Html->link('投稿一覧', '/posts/index') ?>
           <a href="/SBS/users/logout">ログアウト</a>
             <a target="_blank" rel="noopener" href="https://book.cakephp.org/4/">Documentation</a>
             <a target="_blank" rel="noopener" href="https://api.cakephp.org/4/">API</a>

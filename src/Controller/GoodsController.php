@@ -11,88 +11,72 @@ namespace App\Controller;
  */
 class GoodsController extends AppController
 {
+  // コントローラー名以外のモデルを使用する場合はloadModelでモデルを読み込む必要がある。
+  // このクラス全体で使用するため、initializeメソッドに記述する。
+  public function initialize():void
+  {
+    parent::initialize();
+    $this->loadModel('Users');
+    $this->loadModel('Books');
+    $this->loadModel('Posts');
+  }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Good id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $good = $this->Goods->get($id, [
-            'contain' => ['Users', 'Posts'],
-        ]);
 
-        $this->set(compact('good'));
+  public function add()
+  {
+    //CakePHPのレンダー機能を無効化する
+    $this->autoRender = false;
+
+    $good = $this->Goods->newEmptyEntity();
+    //Ajax通信か判定する
+    if ($this->request->is('ajax')) {
+
+      $good = $this->Goods->patchEntity($good, $this->request->getData());
+      if ($this->Goods->save($good)) {
+        $query = $this->Goods->find()->Where(['user_id'=> $this->request->getData('user_id')]);
+        $count = $query->count();
+        echo $count;
+      }
+      $this->Flash->error(__('The good could not be saved. Please, try again.'));
     }
+  }
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
-     */
-    public function add()
+    public function delete()
     {
-        $good = $this->Goods->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $good = $this->Goods->patchEntity($good, $this->request->getData());
-            if ($this->Goods->save($good)) {
-                $this->Flash->success(__('The good has been saved.'));
+      //CakePHPのレンダー機能を無効化する
+      $this->autoRender = false;
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The good could not be saved. Please, try again.'));
+      //Ajax通信か判定する
+      if ($this->request->is('ajax')) {
+
+        if ($this->Goods->deleteAll(['user_id'=>$this->request->getData('user_id'), 'post_id'=>$this->request->getData('post_id')])) {
+          $query = $this->Goods->find()->Where(['user_id'=> $this->request->getData('user_id')]);
+          $count = $query->count();
+          echo $count;
         }
-        $users = $this->Goods->Users->find('list', ['limit' => 200]);
-        $posts = $this->Goods->Posts->find('list', ['limit' => 200]);
-        $this->set(compact('good', 'users', 'posts'));
+        $this->Flash->error(__('The good could not be saved. Please, try again.'));
+      }
     }
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id Good id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $good = $this->Goods->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $good = $this->Goods->patchEntity($good, $this->request->getData());
-            if ($this->Goods->save($good)) {
-                $this->Flash->success(__('The good has been saved.'));
+    public function button(){
+      //CakePHPのレンダー機能を無効化する
+      $this->autoRender = false;
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The good could not be saved. Please, try again.'));
+      //Ajax通信か判定する
+      if ($this->request->is('ajax')) {
+        $query = $this->Goods->find()->Where(['user_id'=> $this->request->getData('user_id')]);
+        $data['count'] = $query->count();
+        $recode = $this->Goods->find()->Where(['user_id'=>$this->request->getData('user_id'), 'post_id'=>$this->request->getData('post_id')]);
+        if ($recode->count() == 1) {
+          $data['btn']= 'already';
         }
-        $users = $this->Goods->Users->find('list', ['limit' => 200]);
-        $posts = $this->Goods->Posts->find('list', ['limit' => 200]);
-        $this->set(compact('good', 'users', 'posts'));
+      }
+      header("Content-Type: application/json; charset=utf-8");
+    // htmlへ渡す配列$resultをjsonに変換する
+      echo json_encode($data);
+
     }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id Good id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $good = $this->Goods->get($id);
-        if ($this->Goods->delete($good)) {
-            $this->Flash->success(__('The good has been deleted.'));
-        } else {
-            $this->Flash->error(__('The good could not be deleted. Please, try again.'));
-        }
 
-        return $this->redirect(['action' => 'index']);
-    }
+
 }

@@ -26,6 +26,7 @@ class PostsController extends AppController
     parent::initialize();
     $this->loadModel('Users');
     $this->loadModel('Books');
+    $this->loadModel('Goods');
   }
 
     /**

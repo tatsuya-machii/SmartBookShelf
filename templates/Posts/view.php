@@ -55,6 +55,94 @@
                     <?= $this->Text->autoParagraph(h($post->impression)); ?>
                 </blockquote>
             </div>
+            <div class="text">
+                <strong><?= __('good') ?></strong>
+                <blockquote>
+                  <p class="hidden user_id"><?= $_SESSION['Auth']['id'] ?></p>
+                  <p class="hidden post_id"><?= $post->id ?></p>
+
+                    <a id="good_add" href=""><?= $this->Html->image('base/good.jpg',['class'=>'good', 'alt'=>'いいね！']) ?></a>
+                  <span> </span>
+                  <?= $this->Html->link('件', ['controller'=> 'posts', 'action'=>'add', '?'=>['review_id'=>h($post->id)]],['class'=>'good_count']) ?>
+                </blockquote>
+            </div>
         </div>
     </div>
+    <script>
+  $(function(){
+    goods_test();
+    check_good_recode();
+
+    // 読み込み時のレコード確認
+    function check_good_recode(){
+      var user_id = $(".user_id").text();
+      var post_id = $(".post_id").text();
+
+      $(window).on('load', function(){
+        $.ajax({
+          type: "post",
+          url: "/SBS/goods/button",
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-CSRF-Token', $('input[name="_csrfToken"]').val());
+          },
+          data: {'user_id':user_id,'post_id':post_id}
+        }).done(function(data){
+          $data = JSON.parse(data);
+          $('.good_count').empty();
+          $('.good_count').append($data.count + "件");
+
+
+
+          if ($data.btn) {
+            $('#good_add').addClass($data['btn']);
+          }
+        })
+      })
+    }
+
+    function goods_test(){
+
+      $(document).on('click', '#good_add', function(){
+        var user_id = $(".user_id").text();
+        var post_id = $(".post_id").text();
+
+        if ($('#good_add').hasClass("already")) {
+          // いいねレコードの削除
+          $.ajax({
+            type: 'post',
+            url: '/SBS/goods/delete',
+            beforeSend: function (xhr) {
+              xhr.setRequestHeader('X-CSRF-Token', $('input[name="_csrfToken"]').val());
+            },
+            data: {'user_id':user_id,'post_id':post_id}
+          }).done(function(data){
+            $('.good_count').empty();
+            $('.good_count').append(data + "件");
+            $('#good_add').removeClass("already");
+          })
+        }else{
+          // いいねレコードの追加
+          $.ajax({
+            type: 'post',
+            url: '/SBS/goods/add',
+            beforeSend: function (xhr) {
+              xhr.setRequestHeader('X-CSRF-Token', $('input[name="_csrfToken"]').val());
+            },
+            data: {'user_id':user_id,'post_id':post_id}
+          }).done(function(data){
+            $('.good_count').empty();
+            $('.good_count').append(data + "件");
+            $('#good_add').addClass("already");
+          })
+
+        }
+        return false;
+      })
+
+    }
+
+  })
+
+  </script>
+
 </div>
