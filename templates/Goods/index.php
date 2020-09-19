@@ -24,7 +24,7 @@
                 <?php foreach ($goods as $good): ?>
                 <tr>
                     <td><?= $this->Number->format($good->id) ?></td>
-                    <td><?= $good->has('user') ? $this->Html->link($good->user->username, ['controller' => 'Users', 'action' => 'main','?'=>['user_id'=>$good->user->id] ]) : '' ?></td>
+                    <td><?= $good->has('user') ? $this->Html->link($good->user->username, ['controller' => 'Users', 'action' => 'main', $good->user->id]) : '' ?></td>
                     <td><?= $good->has('post') ? $this->Html->link($good->post->id, ['controller' => 'posts', 'action' => 'view', $good->post->id]) : '' ?></td>
                     <td><?= h($good->created) ?></td>
                     <td><?= h($good->modified) ?></td>

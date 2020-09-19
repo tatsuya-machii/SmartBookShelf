@@ -76,7 +76,7 @@
                   <?php } ?>
 
                     <span> </span>
-                    <?= $this->Html->link('件', ['controller'=> 'goods', 'action'=>'index', '?'=>['post_id'=>h($post->id)]],['class'=>'good_count']) ?>
+                    <?= $this->Html->link('件', ['controller'=> 'goods', 'action'=>'index', h($post->id)],['class'=>'good_count']) ?>
 
 
 

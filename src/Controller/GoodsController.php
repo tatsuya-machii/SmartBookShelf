@@ -33,10 +33,10 @@ class GoodsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function index()
+    public function index($id=null)
     {
 
-        $goods = $this->paginate($this->Goods->find()->Where(['post_id'=>$_GET['post_id']]));
+        $goods = $this->paginate($this->Goods->find()->Where(['post_id'=>$id]));
 
         $this->set(compact('goods'));
     }

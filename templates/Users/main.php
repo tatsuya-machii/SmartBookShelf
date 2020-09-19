@@ -1,7 +1,7 @@
 
   <main>
     <?php
-      if (empty($this->request->getParam('pass')[0])){
+      if ($user->id == $_SESSION['Auth']['id']){
         $user_name = $_SESSION["Auth"]["username"];
         $id = $_SESSION['Auth']['id'];
         if (isset($_SESSION["Auth"]["image"])) {
@@ -17,7 +17,7 @@
     <p class="hidden id"><?= $id ?></p>
 
 
-
+<?= print_r($_SESSION); ?>
     <!-- HOME SECTION -->
     <section id="home">
       <div id="user_inform" class="container">
@@ -45,24 +45,24 @@
             <div id="user_text" class="col-lg-9 col-sm-9  col-xs-12 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
               <p>名前：<?php echo $user_name ?></p>
 
-              <?php if (empty($_GET["user_id"]) || $_GET["user_id"] == $_SESSION["Auth"]["id"]){ ?>
+              <?php if ($user->id == $_SESSION['Auth']['id']){ ?>
                 <p>メールアドレス：<?php echo $_SESSION["Auth"]["email"] ?></p>
                 <p>友だち：
-                  <a href="friend_index.php?user_id=<?= $_SESSION['Auth']['id'] ?>">
+                  <a href="/SBS/friends/index/<?= $id ?>">
                     <span id="ajax_friends"></span>人
                   </a>
                 </p>
               <?php }else{ ?>
                 <p>友だち：
-                  <a href="friend_index.php?user_id=<?= $_GET["user_id"] ?>">
+                  <a href="/SBS/friends/index/<?= $id ?>">
                     <span id="ajax_friends"></span>人
                   </a>
                 </p>
               <?php } ?>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-3 col-lg-offset-10 col-md-offset-10 col-sm-offset-9 text-right">
-              <?php if (empty($_GET["user_id"]) || $_GET["user_id"] == $_SESSION["Auth"]["id"]){ ?>
-                <?= $this->Html->link('編集する', '/users/edit/'.$_SESSION['Auth']['id'], ['class' => 'edit_link']) ?>
+              <?php if ($id == $_SESSION['Auth']['id']){ ?>
+                <?= $this->Html->link('編集する', "/users/edit/".$id , ['class' => 'edit_link']) ?>
               <?php }else{ ?>
                 <div id="friend_add"></div>
               <?php }; ?>
