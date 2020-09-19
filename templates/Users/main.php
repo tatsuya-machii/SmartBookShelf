@@ -1,14 +1,23 @@
 
   <main>
-    <?php if (empty($_GET["user_id"])){
-      $user_name = $_SESSION["Auth"]["username"];
-      if (isset($_SESSION["Auth"]["image"])) {
-        $user_image = $_SESSION["Auth"]["image"];
-      }
-    }else{
-      $user_name = $result[0]["user_name"];
-      $user_image = $result[0]["user_image"];
-    }; ?>
+    <?php
+      if (empty($this->request->getParam('pass')[0])){
+        $user_name = $_SESSION["Auth"]["username"];
+        $id = $_SESSION['Auth']['id'];
+        if (isset($_SESSION["Auth"]["image"])) {
+          $user_image = $_SESSION["Auth"]["image"];
+        }
+      }else{
+        $id = $user->id;
+        $user_name = $user->username;
+        $user_image = $user->image;
+      };
+    ?>
+    <!-- ajaxで使用 -->
+    <p class="hidden id"><?= $id ?></p>
+
+
+
     <!-- HOME SECTION -->
     <section id="home">
       <div id="user_inform" class="container">
@@ -35,17 +44,24 @@
             </div>
             <div id="user_text" class="col-lg-9 col-sm-9  col-xs-12 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
               <p>名前：<?php echo $user_name ?></p>
-              <?php if (empty($_GET["user_id"]) || $_GET["user_id"] == $_SESSION["user"]["id"]): ?>
+
+              <?php if (empty($_GET["user_id"]) || $_GET["user_id"] == $_SESSION["Auth"]["id"]){ ?>
                 <p>メールアドレス：<?php echo $_SESSION["Auth"]["email"] ?></p>
-              <?php endif; ?>
                 <p>友だち：
-                  <a href="friend_index.php<?php if(!empty($_GET["user_id"]) && $_GET["user_id"] != $_SESSION["user"]["id"]){echo "?user_id=".$_GET["user_id"];} ?>">
+                  <a href="friend_index.php?user_id=<?= $_SESSION['Auth']['id'] ?>">
                     <span id="ajax_friends"></span>人
                   </a>
                 </p>
+              <?php }else{ ?>
+                <p>友だち：
+                  <a href="friend_index.php?user_id=<?= $_GET["user_id"] ?>">
+                    <span id="ajax_friends"></span>人
+                  </a>
+                </p>
+              <?php } ?>
             </div>
             <div class="col-lg-2 col-md-2 col-sm-3 col-lg-offset-10 col-md-offset-10 col-sm-offset-9 text-right">
-              <?php if (empty($_GET["user_id"]) || $_GET["user_id"] == $_SESSION["user"]["id"]){ ?>
+              <?php if (empty($_GET["user_id"]) || $_GET["user_id"] == $_SESSION["Auth"]["id"]){ ?>
                 <?= $this->Html->link('編集する', '/users/edit/'.$_SESSION['Auth']['id'], ['class' => 'edit_link']) ?>
               <?php }else{ ?>
                 <div id="friend_add"></div>
@@ -59,7 +75,7 @@
     <section id="book_shelf">
       <div class="container">
         <div class="row">
-          <?php if ($_SESSION['Auth']['role'] == 1) { ?>
+          <?php if ($_SESSION['Auth']['role'] == 1 && !isset($_GET['user_id']) ) { ?>
             <!--                                         管理者画面                                        -->
             <div class="col-lg-12 col-md-12 col-sm-12">
               <p class="index">管理者専用ページ</p>
@@ -74,7 +90,7 @@
             <!--                                         一般ユーザー画面                                        -->
             <div class="col-lg-12 col-sm-12">
               <p class="index"><?php echo $user_name; ?>さんの本棚</p>
-              <?php if(empty($_GET["user_id"]) || $_GET["user_id"] == $_SESSION["user"]["id"]): ?>
+              <?php if(empty($_GET["user_id"]) || $_GET["user_id"] == $_SESSION["Auth"]["id"]): ?>
                 <a href="review_book_search.php">本を追加する</a>
               <?php endif; ?>
 

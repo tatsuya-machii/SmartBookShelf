@@ -130,15 +130,17 @@ class UsersController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function main(){
+    public function main($id=null){
       $this->viewBuilder()->setLayout('main');
 
-      if (isset($_GET['id'])) {
-        $id = $_GET['id'];
-      }else{
+      if (empty($id)) {
         $user = $this->request->getAttribute('identity');
         $id = $user->id;
       }
+      $user = $this->Users->get($id, [
+          'contain' => [],
+      ]);
+
       $posts = $this->Posts
         ->find()
         ->order(['created'=>'desc'])
@@ -157,7 +159,7 @@ class UsersController extends AppController
         ]);
       //sqlでposts取得、joinでbooks.image取得
 
-      $this->set(compact('posts'));
+      $this->set(compact('user','posts'));
 
     }
 

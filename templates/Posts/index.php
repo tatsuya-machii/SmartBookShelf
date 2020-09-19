@@ -40,7 +40,7 @@
                         <i class="fas fa-user small_icon user"></i>
                     </p>
                     <p>
-                      <?= $this->html->link(h($post->user->username), ['controller' => 'users', 'acttion' => 'main','?' => ['user_id' => $this->Number->format($post->user_id)]]) ?>
+                      <?= $this->html->link(h($post->user->username), ['controller' => 'users', 'action' => 'main', $this->Number->format($post->user_id)]) ?>
                     </p>
                   </td>
                   <td>
@@ -104,7 +104,7 @@ $(function(){
 
           var html ="<tr><td>";
           var html = html + "<p>" + key["userimage"];
-          var html = html + "</p><p>" + key["username"]+ "</p></td>";
+          var html = html + "</p><p><a href= '/SBS/users/main/" + key["user_id"] + "'>" + key["username"]+ "</a></p></td>";
           var html = html + "<td>";
           var html = html + "<p>" + key["bookimage"];
           var html = html + "</p><p><a href='/SBS/posts/view/" + key["id"] + "'>" + key["bookname"] + "</a></p></td>";

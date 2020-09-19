@@ -17,9 +17,53 @@ class GoodsController extends AppController
   {
     parent::initialize();
     $this->loadModel('Users');
-    $this->loadModel('Books');
     $this->loadModel('Posts');
   }
+
+  // ページネーションのオプション設定
+  public $paginate = [
+    'order' => [
+      'created' => 'desc'
+    ],
+    'contain' => ['Users', 'Posts']
+  ];
+
+    /**
+     * Index method
+     *
+     * @return \Cake\Http\Response|null|void Renders view
+     */
+    public function index()
+    {
+
+        $goods = $this->paginate($this->Goods->find()->Where(['post_id'=>$_GET['post_id']]));
+
+        $this->set(compact('goods'));
+    }
+
+
+    /**
+     * Delete method
+     *
+     * @param string|null $id Good id.
+     * @return \Cake\Http\Response|null|void Redirects to index.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $good = $this->Goods->get($id);
+        if ($this->Goods->delete($good)) {
+            $this->Flash->success(__('The good has been deleted.'));
+        } else {
+            $this->Flash->error(__('The good could not be deleted. Please, try again.'));
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
+
+
+
 
 
   public function add()
@@ -33,15 +77,17 @@ class GoodsController extends AppController
 
       $good = $this->Goods->patchEntity($good, $this->request->getData());
       if ($this->Goods->save($good)) {
-        $query = $this->Goods->find()->Where(['user_id'=> $this->request->getData('user_id')]);
+        $query = $this->Goods->find()->Where(['post_id'=> $this->request->getData('post_id')]);
         $count = $query->count();
         echo $count;
+      }else{
+        $this->Flash->error(__('The good could not be saved. Please, try again.'));
       }
-      $this->Flash->error(__('The good could not be saved. Please, try again.'));
     }
   }
 
-    public function delete()
+
+    public function ajaxDelete()
     {
       //CakePHPのレンダー機能を無効化する
       $this->autoRender = false;
@@ -49,12 +95,14 @@ class GoodsController extends AppController
       //Ajax通信か判定する
       if ($this->request->is('ajax')) {
 
-        if ($this->Goods->deleteAll(['user_id'=>$this->request->getData('user_id'), 'post_id'=>$this->request->getData('post_id')])) {
-          $query = $this->Goods->find()->Where(['user_id'=> $this->request->getData('user_id')]);
+        if ($this->Goods->deleteAll(['post_id'=>$this->request->getData('post_id')])) {
+          $query = $this->Goods->find()->Where(['user_id'=>$this->request->getData('user_id'), 'post_id'=>$this->request->getData('post_id')]);
           $count = $query->count();
           echo $count;
+        }else{
+          $this->Flash->error(__('The good could not be saved. Please, try again.'));
+
         }
-        $this->Flash->error(__('The good could not be saved. Please, try again.'));
       }
     }
 
@@ -64,7 +112,7 @@ class GoodsController extends AppController
 
       //Ajax通信か判定する
       if ($this->request->is('ajax')) {
-        $query = $this->Goods->find()->Where(['user_id'=> $this->request->getData('user_id')]);
+        $query = $this->Goods->find()->Where(['post_id'=> $this->request->getData('post_id')]);
         $data['count'] = $query->count();
         $recode = $this->Goods->find()->Where(['user_id'=>$this->request->getData('user_id'), 'post_id'=>$this->request->getData('post_id')]);
         if ($recode->count() == 1) {

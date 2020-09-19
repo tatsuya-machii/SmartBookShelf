@@ -4,14 +4,20 @@
  * @var \Cake\Datasource\EntityInterface $post
  */
 ?>
+
+<?= $this->Html->script(['good'])?>
+
+
 <div class="row">
     <aside class="column">
         <div class="side-nav">
             <h4 class="heading"><?= __('Actions') ?></h4>
-            <?= $this->Html->link(__('Edit Post'), ['action' => 'edit', $post->id], ['class' => 'side-nav-item']) ?>
-            <?= $this->Form->postLink(__('Delete Post'), ['action' => 'delete', $post->id], ['confirm' => __('Are you sure you want to delete # {0}?', $post->id), 'class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('List Posts'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
-            <?= $this->Html->link(__('New Post'), ['action' => 'add'], ['class' => 'side-nav-item']) ?>
+            <?php if ($post->user_id == $_SESSION['Auth']['id']): ?>
+              <?= $this->Html->link(__('Edit Post'), ['action' => 'edit', $post->id], ['class' => 'side-nav-item']) ?>
+              <?= $this->Form->postLink(__('Delete Post'), ['action' => 'delete', $post->id], ['confirm' => __('Are you sure you want to delete # {0}?', $post->id), 'class' => 'side-nav-item']) ?>
+              <?= $this->Html->link(__('List Posts'), ['action' => 'index'], ['class' => 'side-nav-item']) ?>
+              <?= $this->Html->link(__('New Post'), ['action' => 'add'], ['class' => 'side-nav-item']) ?>
+            <?php endif; ?>
         </div>
     </aside>
     <div class="column-responsive column-80">
@@ -58,91 +64,24 @@
             <div class="text">
                 <strong><?= __('good') ?></strong>
                 <blockquote>
-                  <p class="hidden user_id"><?= $_SESSION['Auth']['id'] ?></p>
-                  <p class="hidden post_id"><?= $post->id ?></p>
 
+                  <!-- 自分のレビューの場合 -->
+                  <?php if (h($post->user_id)== $_SESSION['Auth']['id']) { ?>
+                    <?= $this->Html->image('base/good.jpg',['class'=>'good', 'alt'=>'いいね！']) ?>
+                  <?php }else{ ?>
+                    <!-- 他人のレビューの場合 -->
+                    <p class="hidden user_id"><?= $_SESSION['Auth']['id'] ?></p>
+                    <p class="hidden post_id"><?= $post->id ?></p>
                     <a id="good_add" href=""><?= $this->Html->image('base/good.jpg',['class'=>'good', 'alt'=>'いいね！']) ?></a>
-                  <span> </span>
-                  <?= $this->Html->link('件', ['controller'=> 'posts', 'action'=>'add', '?'=>['review_id'=>h($post->id)]],['class'=>'good_count']) ?>
+                  <?php } ?>
+
+                    <span> </span>
+                    <?= $this->Html->link('件', ['controller'=> 'goods', 'action'=>'index', '?'=>['post_id'=>h($post->id)]],['class'=>'good_count']) ?>
+
+
+
                 </blockquote>
             </div>
         </div>
     </div>
-    <script>
-  $(function(){
-    goods_test();
-    check_good_recode();
-
-    // 読み込み時のレコード確認
-    function check_good_recode(){
-      var user_id = $(".user_id").text();
-      var post_id = $(".post_id").text();
-
-      $(window).on('load', function(){
-        $.ajax({
-          type: "post",
-          url: "/SBS/goods/button",
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader('X-CSRF-Token', $('input[name="_csrfToken"]').val());
-          },
-          data: {'user_id':user_id,'post_id':post_id}
-        }).done(function(data){
-          $data = JSON.parse(data);
-          $('.good_count').empty();
-          $('.good_count').append($data.count + "件");
-
-
-
-          if ($data.btn) {
-            $('#good_add').addClass($data['btn']);
-          }
-        })
-      })
-    }
-
-    function goods_test(){
-
-      $(document).on('click', '#good_add', function(){
-        var user_id = $(".user_id").text();
-        var post_id = $(".post_id").text();
-
-        if ($('#good_add').hasClass("already")) {
-          // いいねレコードの削除
-          $.ajax({
-            type: 'post',
-            url: '/SBS/goods/delete',
-            beforeSend: function (xhr) {
-              xhr.setRequestHeader('X-CSRF-Token', $('input[name="_csrfToken"]').val());
-            },
-            data: {'user_id':user_id,'post_id':post_id}
-          }).done(function(data){
-            $('.good_count').empty();
-            $('.good_count').append(data + "件");
-            $('#good_add').removeClass("already");
-          })
-        }else{
-          // いいねレコードの追加
-          $.ajax({
-            type: 'post',
-            url: '/SBS/goods/add',
-            beforeSend: function (xhr) {
-              xhr.setRequestHeader('X-CSRF-Token', $('input[name="_csrfToken"]').val());
-            },
-            data: {'user_id':user_id,'post_id':post_id}
-          }).done(function(data){
-            $('.good_count').empty();
-            $('.good_count').append(data + "件");
-            $('#good_add').addClass("already");
-          })
-
-        }
-        return false;
-      })
-
-    }
-
-  })
-
-  </script>
-
 </div>
