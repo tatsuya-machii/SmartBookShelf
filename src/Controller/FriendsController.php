@@ -26,21 +26,6 @@ class FriendsController extends AppController
         $this->set(compact('friends'));
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Friend id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $friend = $this->Friends->get($id, [
-            'contain' => ['Users'],
-        ]);
-
-        $this->set(compact('friend'));
-    }
 
     /**
      * Add method
@@ -49,44 +34,29 @@ class FriendsController extends AppController
      */
     public function add()
     {
+      //CakePHPのレンダー機能を無効化する
+      $this->autoRender = false;
+
+      //Ajax通信か判定する
+      if ($this->request->is('ajax')) {
+
+        $user_id = $this->request->getData('user_id');
         $friend = $this->Friends->newEmptyEntity();
         if ($this->request->is('post')) {
             $friend = $this->Friends->patchEntity($friend, $this->request->getData());
             if ($this->Friends->save($friend)) {
                 $this->Flash->success(__('The friend has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                echo 'success';
+            }else{
+              $this->Flash->error(__('The friend could not be saved. Please, try again.'));
+                echo 'false';
             }
-            $this->Flash->error(__('The friend could not be saved. Please, try again.'));
         }
-        $users = $this->Friends->Users->find('list', ['limit' => 200]);
-        $this->set(compact('friend', 'users'));
+
+      }
     }
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id Friend id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $friend = $this->Friends->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $friend = $this->Friends->patchEntity($friend, $this->request->getData());
-            if ($this->Friends->save($friend)) {
-                $this->Flash->success(__('The friend has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The friend could not be saved. Please, try again.'));
-        }
-        $users = $this->Friends->Users->find('list', ['limit' => 200]);
-        $this->set(compact('friend', 'users'));
-    }
 
     /**
      * Delete method
@@ -95,16 +65,37 @@ class FriendsController extends AppController
      * @return \Cake\Http\Response|null|void Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
+    public function delete()
     {
+      //CakePHPのレンダー機能を無効化する
+      $this->autoRender = false;
+      //Ajax通信か判定する
+      if ($this->request->is('ajax')) {
         $this->request->allowMethod(['post', 'delete']);
-        $friend = $this->Friends->get($id);
-        if ($this->Friends->delete($friend)) {
+        // find()はクエリを実行しないので、toArray()で実行後の配列を取得。その後、配列の[0]（該当のfriend情報）を引数にしてdeleteを実行する。
+        $friend = $this->Friends->find()->Where(['user_id'=>$this->request->getData('user_id'),'friends_id' =>$this->request->getData('friends_id')]);
+        $friend = $friend->toArray();
+        if ($this->Friends->delete($friend[0])) {
           $this->Flash->success(__('The friend has been deleted.'));
+          echo 'success';
+
         } else {
           $this->Flash->error(__('The friend could not be deleted. Please, try again.'));
         }
+      }
+    }
 
-        return $this->redirect(['action' => 'index']);
+    public function test()
+    {
+      //CakePHPのレンダー機能を無効化する
+      $this->autoRender = false;
+      //Ajax通信か判定する
+      if ($this->request->is('ajax')) {
+        // find()はクエリを実行しないので、toArray()で実行後の配列を取得。その後、配列の[0]（該当のfriend情報）を引数にしてdeleteを実行する。
+        $friend = $this->Friends->find()->Where(['user_id'=>$this->request->getData('user_id'),'friends_id' =>$this->request->getData('friends_id')]);
+        if ($friend->toArray()) {
+          echo 'already';
+        }
+      }
     }
 }

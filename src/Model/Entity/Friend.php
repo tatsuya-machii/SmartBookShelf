@@ -15,7 +15,6 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime $modified
  *
  * @property \App\Model\Entity\User $user
- * @property \App\Model\Entity\Friend $friend
  */
 class Friend extends Entity
 {

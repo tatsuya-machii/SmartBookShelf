@@ -1,4 +1,7 @@
 
+<?= $this->Html->script(['friend'])?>
+
+
   <main>
     <?php
       if ($user->id == $_SESSION['Auth']['id']){
@@ -11,10 +14,15 @@
         $id = $user->id;
         $user_name = $user->username;
         $user_image = $user->image;
+        ?>
+        <!-- ajaxで使用 -->
+        <p class="hidden user_id"><?= $_SESSION['Auth']['id'] ?></p>
+        <p class="hidden friends_id"><?= $id ?></p>
+        <?php
       };
     ?>
     <!-- ajaxで使用 -->
-    <p class="hidden id"><?= $id ?></p>
+    <p class="hidden current_pages_user_id"><?= $id ?></p>
 
 
 <?= print_r($_SESSION); ?>
@@ -60,11 +68,13 @@
                 </p>
               <?php } ?>
             </div>
+
+            <!-- 編集 or 友だち追加 -->
             <div class="col-lg-2 col-md-2 col-sm-3 col-lg-offset-10 col-md-offset-10 col-sm-offset-9 text-right">
               <?php if ($id == $_SESSION['Auth']['id']){ ?>
                 <?= $this->Html->link('編集する', "/users/edit/".$id , ['class' => 'edit_link']) ?>
               <?php }else{ ?>
-                <div id="friend_add"></div>
+                <a id="friend_add"></a><!-- 友だち追加・削除ボタン -->
               <?php }; ?>
             </div>
         </div><!-- row -->

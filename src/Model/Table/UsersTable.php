@@ -46,6 +46,7 @@ class UsersTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->hasMany('Posts');
+        $this->hasMany('Friends');
     }
 
     /**
