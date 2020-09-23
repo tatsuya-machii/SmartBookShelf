@@ -69,14 +69,26 @@ class UsersTable extends Table
 
         $validator
             ->email('email')
-            ->requirePresence('email', 'create')
-            ->notEmptyString('email');
+            // ->requirePresence('email', 'create')
+            ->allowEmptyString('email');
 
         $validator
             ->scalar('password')
             ->maxLength('password', 255)
-            ->requirePresence('password', 'create')
-            ->notEmptyString('password');
+            // ->requirePresence('password', 'create')
+            ->allowEmptyString('password');
+
+        $validator
+            ->scalar('temporary_password')
+            ->maxLength('password', 255)
+            // ->requirePresence('password', 'create')
+            ->allowEmptyString('password');
+
+        $validator
+            ->scalar('twitter_id')
+            ->maxLength('biginteger', 20)
+            // ->requirePresence('twitter_id', 'create')
+            ->allowEmptyString('twitter_id');
 
         $validator
             ->scalar('image')
@@ -104,7 +116,7 @@ class UsersTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->isUnique(['username']), ['errorField' => 'username']);
-        $rules->add($rules->isUnique(['email']), ['errorField' => 'email']);
+        // $rules->add($rules->isUnique(['email']), ['errorField' => 'email']);
 
         return $rules;
     }

@@ -125,6 +125,7 @@ implements AuthenticationServiceProviderInterface, AuthorizationServiceProviderI
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $authenticationService = new AuthenticationService([
+          //ユーザーが認証されていない場合にユーザーをリダイレクトする場所を定義します
             'unauthenticatedRedirect' => '/SBS/users/login',
             'queryParam' => 'redirect',
         ]);

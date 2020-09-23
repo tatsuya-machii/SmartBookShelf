@@ -25,7 +25,6 @@
     <p class="hidden current_pages_user_id"><?= $id ?></p>
 
 
-<?= print_r($_SESSION); ?>
     <!-- HOME SECTION -->
     <section id="home">
       <div id="user_inform" class="container">

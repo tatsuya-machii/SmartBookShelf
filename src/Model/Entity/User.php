@@ -34,6 +34,8 @@ class User extends Entity
         'username' => true,
         'email' => true,
         'password' => true,
+        'temporary_password' => true,
+        'twitter_id' => true,
         'image' => true,
         'role' => true,
         'status' => true,

@@ -5,7 +5,7 @@
       <i class="fas fa-book-open"></i>
     </div>
 
-    <form action="" method="post">
+    <?= $this->Form->create() ?>
 
       <p class="error"><?php if(!empty($result["error"])) {echo $result["error"];}?></p>
       <p style="width:300px;">
@@ -15,7 +15,7 @@
       </p>
       <?= $this->form->control('email', array('label' => false, 'required' => true, 'placeholder' => 'email')) ?>
       <?= $this->form->submit('送　　信',array('class' => 'btn btn-warning')) ?>
-    </form>
+      <?= $this->Form->end() ?>
     <?= $this->HTML->link('ログイン画面に戻る', '/users/login', ['class' => 'grayLink']) ?>
 
 
