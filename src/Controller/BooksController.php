@@ -144,7 +144,9 @@ class BooksController extends AppController
 
 
               // image
-              if ($book['image'] == null) {
+              if ($book['image'] != null && file_exists('img/books/'.$book['image'])) {
+                $book['image'] = '<img src="/SBS/webroot/img/books/'.$book['image'].'">';
+              }else{
                 $book['image'] = '<i class="fas fa-book-open small_icon"></i>';
               };
 

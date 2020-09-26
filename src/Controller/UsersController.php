@@ -109,7 +109,6 @@ class UsersController extends AppController
             // イメージファイルのアップロード
             $file = $this->request->getData('image');
             if( $file->getClientFilename() ) {
-              $file = $this->request->getData('image');
               $filePath = "../webroot/img/users/". $id.".".pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
               $file->moveTo($filePath);
               $data = $this->request->getData();

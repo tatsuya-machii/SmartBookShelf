@@ -27,14 +27,6 @@
                     <td><?= h($user->email) ?></td>
                 </tr>
                 <tr>
-                    <th><?= __('Password') ?></th>
-                    <td><?= h($user->password) ?></td>
-                </tr>
-                <tr>
-                    <th><?= __('Temporary Password') ?></th>
-                    <td><?= h($user->temporary_password) ?></td>
-                </tr>
-                <tr>
                     <th><?= __('Image') ?></th>
                     <td><?= h($user->image) ?></td>
                 </tr>

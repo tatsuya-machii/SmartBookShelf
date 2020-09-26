@@ -191,11 +191,15 @@ class PostsController extends AppController
 
 
             // userimage
-            if ($post['userimage'] == null) {
+            if (!empty($post['userimage']) && file_exists('img/users/'.$post['userimage'])) {
+              $post['userimage'] = '<img src="/SBS/webroot/img/users/'.$post['userimage'].'">';
+            }else{
               $post['userimage'] = '<i class="fas fa-user small_icon"></i>';
             };
             // bookimage
-            if ($post['bookimage'] == null) {
+            if (!empty($post['bookimage']) && file_exists('img/books/'.$post['bookimage'])) {
+              $post['bookimage'] = '<img src="/SBS/webroot/img/books/'.$post['bookimage'].'">';
+            }else{
               $post['bookimage'] = '<i class="fas fa-book-open small_icon"></i>';
             };
             // star

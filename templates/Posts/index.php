@@ -37,7 +37,11 @@
                 <tr>
                   <td>
                     <p>
+                      <?php if (!empty($post->user->image) && file_exists('img/users/'.$post->user->image)){ ?>
+                        <?= $this->HTML->image('users/'.$post->user->image, ['class'=>'user_icon']); ?>
+                      <?php }else{ ?>
                         <i class="fas fa-user small_icon user"></i>
+                      <?php } ?>
                     </p>
                     <p>
                       <?= $this->html->link(h($post->user->username), ['controller' => 'users', 'action' => 'main', $this->Number->format($post->user_id)]) ?>
@@ -45,7 +49,11 @@
                   </td>
                   <td>
                     <p>
+                      <?php if (!empty($post->book->image) && file_exists('img/books/'.$post->book->image)){ ?>
+                        <?= $this->HTML->image('books/'.$post->book->image, ['class'=>'book_icon']); ?>
+                      <?php }else{ ?>
                         <i class="fas fa-book-open small_icon"></i>
+                      <?php } ?>
                     </p>
                     <p>
                       <?= $this->Html->link(h($post->book->bookname), ['controller' => 'posts', 'action' => 'view', $this->Number->format($post->id)]) ?>

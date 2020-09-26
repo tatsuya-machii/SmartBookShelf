@@ -106,7 +106,7 @@
                     <div class="book_container">
                       <div class="book_image">
                         <!-- 本のイメージはDBにimageの登録があり、同名のイメージ画像が保存されている場合のみ表示する。 -->
-                        <?php if (isset($post['image']) && file_exists('/SBS/webroot/img/books/'.$post['image'])){ ?>
+                        <?php if (!empty($post['image']) && file_exists('img/books/'.$post['image'])){ ?>
                           <p><?= $this->HTML->image('books/'.$post['image'], ['class'=>'book_icon']); ?></p>
                         <?php }else{ ?>
                           <i class="fas fa-book-open"></i>

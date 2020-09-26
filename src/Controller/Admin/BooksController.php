@@ -73,7 +73,23 @@ class BooksController extends AdminController
             'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $book = $this->Books->patchEntity($book, $this->request->getData());
+
+          // イメージファイルのアップロード
+          $file = $this->request->getData('image');
+          if( $file->getClientFilename() ) {
+            // debug($file->getClientFilename());
+            // die();
+            $filePath = "../webroot/img/books/". $id.".".pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+            $file->moveTo($filePath);
+            $data = $this->request->getData();
+            $data['image'] = $id.".".pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+          }else{
+            $data = $this->request->getData();
+            unset($data['image']);
+          }
+
+
+            $book = $this->Books->patchEntity($book, $data);
             if ($this->Books->save($book)) {
                 $this->Flash->success(__('The book has been saved.'));
 
