@@ -64,7 +64,7 @@ class PostsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($id=null)
     {
         $post = $this->Posts->newEmptyEntity();
         if ($this->request->is('post')) {
@@ -78,7 +78,9 @@ class PostsController extends AppController
         }
         $users = $this->Users->find('list');
         $books = $this->Books->find('list');
-        $this->set(compact('post', 'users', 'books'));
+        $book = $this->Books->find()->Where(['id'=>$id])->toArray();
+        $book = $book[0];
+        $this->set(compact('post', 'users', 'books', 'book', 'id'));
     }
 
     /**
@@ -192,7 +194,7 @@ class PostsController extends AppController
             if ($post['userimage'] == null) {
               $post['userimage'] = '<i class="fas fa-user small_icon"></i>';
             };
-            // userimage
+            // bookimage
             if ($post['bookimage'] == null) {
               $post['bookimage'] = '<i class="fas fa-book-open small_icon"></i>';
             };

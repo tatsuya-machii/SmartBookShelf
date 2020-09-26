@@ -16,12 +16,16 @@ class FriendsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function index()
+    public function index($id=null)
     {
         $this->paginate = [
             'contain' => ['Users'],
         ];
-        $friends = $this->paginate($this->Friends);
+        if (isset($id)) {
+          $friends = $this->paginate($this->Friends->find()->where(['user_id'=>$id]));
+        }else{
+          $friends = $this->paginate($this->Friends);
+        }
 
         $this->set(compact('friends'));
     }

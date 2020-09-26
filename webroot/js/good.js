@@ -5,12 +5,15 @@ $(function(){
   goods_test();
   check_good_recode();
 
+
+
   // 読み込み時のレコード確認
   function check_good_recode(){
     var user_id = $(".user_id").text();
     var post_id = $(".post_id").text();
     var csrf = $('input[name=_csrfToken]').val();
 
+    // いいねのカウント
     $(window).on('load', function(){
       $.ajax({
         type: "post",
@@ -32,8 +35,8 @@ $(function(){
     })
   }
 
+  // いいねクリック時の動作
   function goods_test(){
-
     $(document).on('click', '#good_add', function(){
       var user_id = $(".user_id").text();
       var post_id = $(".post_id").text();

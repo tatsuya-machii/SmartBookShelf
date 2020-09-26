@@ -49,7 +49,7 @@ class FriendsTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
+            'foreignKey' => 'friends_id',
             'joinType' => 'INNER',
         ]);
     }

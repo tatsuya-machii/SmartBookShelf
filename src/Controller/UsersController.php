@@ -30,8 +30,7 @@ class UsersController extends AppController
     parent::initialize();
     $this->loadModel('Posts');
     $this->loadModel('Books');
-
-
+    $this->loadModel('Friends');
 
   }
 
@@ -106,7 +105,21 @@ class UsersController extends AppController
             'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $user = $this->Users->patchEntity($user, $this->request->getData());
+
+            // イメージファイルのアップロード
+            $file = $this->request->getData('image');
+            if( $file->getClientFilename() ) {
+              $file = $this->request->getData('image');
+              $filePath = "../webroot/img/users/". $id.".".pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+              $file->moveTo($filePath);
+              $data = $this->request->getData();
+              $data['image'] = $id.".".pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+            }else{
+              $data = $this->request->getData();
+              unset($data['image']);
+            }
+
+            $user = $this->Users->patchEntity($user, $data);
             if ($this->Users->save($user)) {
               unset($_SESSION['Auth']);
               $_SESSION['Auth']= $user;
@@ -143,7 +156,7 @@ class UsersController extends AppController
 
     public function main($id=null){
       $this->viewBuilder()->setLayout('main');
-
+      // 表示するユーザーの特定
       if (empty($id)) {
         $user = $this->request->getAttribute('identity');
         $id = $_SESSION['Auth']['id'];
@@ -152,6 +165,7 @@ class UsersController extends AppController
           'contain' => [],
       ]);
 
+      // ユーザーの投稿履歴を取得
       $posts = $this->Posts
         ->find()
         ->order(['created'=>'desc'])
@@ -168,9 +182,15 @@ class UsersController extends AppController
           'recommends' => 'Posts.recommends',
           'created' => 'Posts.created'
         ]);
-      //sqlでposts取得、joinでbooks.image取得
 
-      $this->set(compact('user','posts'));
+      $friends = $this->Friends
+        ->find()
+        ->Where(['user_id'=>$id]);
+
+      $count = $friends->count();
+
+
+      $this->set(compact('user','posts', 'count'));
 
     }
 
@@ -226,10 +246,8 @@ class UsersController extends AppController
           $mailer->setProfile('default')
               ->setFrom(['SBS@example.com' => 'Smart Book Shelf'])
               ->setTo($email)
-              ->setSubject('Sent to you temporary password');
-          $mailer->deliver();
-          print_r($mailer);
-          die();
+              ->setSubject("仮パスワードのお知らせ\n[SmartBookShelf]");
+          $mailer->deliver("仮パスワードを発行しました。以下のURLにアクセスし、仮パスワードを入力して、新しいパスワードを登録してください。\n仮パスワード：".$temporary_password."\nurl:http://192.168.33.10/SBS/users/create-new-pass");
               $this->Flash->success(__('We sent Email for'.$email.'. please check the email.'));
               return $this->redirect(['action' => 'createNewPass']);
         }
@@ -238,6 +256,32 @@ class UsersController extends AppController
         return $this->redirect(['action' => 'forgetPass']);
       }
 
+    }
+
+    public function createNewPass(){
+      if ($this->request->is(['patch', 'post', 'put'])) {
+        // メールアドレスからユーザーを検索
+        $user = $this->Users->find()->Where(['email'=>$this->request->getData('email')]);
+        if ($user = $user->toArray()) {
+          $user = $user[0];
+          // 仮パスワードの照合
+          if ($user->temporary_password == $this->request->getData('temporary_password')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            // ユーザー情報の更新
+            $user->temporary_password = null;
+            if ($this->Users->save($user)) {
+                $this->Flash->success(__('The user has been saved.'));
+                return $this->redirect(['action' => 'login']);
+            }
+            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+
+          }else{
+            $this->Flash->error(__('temporary_password is wrong. Please, try again.'));
+          }
+        }else{
+        $this->Flash->error(__('The user could not find. Please, try again.'));
+        }
+      }
     }
 
     public function tw_login(){
