@@ -31,6 +31,13 @@ use Authentication\AuthenticationServiceInterface;
 use Authentication\AuthenticationServiceProviderInterface;
 use Authentication\Middleware\AuthenticationMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
+// 権限による条件分岐の実装のための追加
+use Authorization\AuthorizationService;
+use Authorization\AuthorizationServiceInterface;
+use Authorization\AuthorizationServiceProviderInterface;
+use Authorization\Middleware\AuthorizationMiddleware;
+use Authorization\Policy\OrmResolver;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Application setup class.
@@ -39,7 +46,8 @@ use Psr\Http\Message\ServerRequestInterface;
  * want to use in your application.
  */
 class Application extends BaseApplication
-implements AuthenticationServiceProviderInterface
+implements AuthenticationServiceProviderInterface, AuthorizationServiceProviderInterface
+
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -64,6 +72,8 @@ implements AuthenticationServiceProviderInterface
         }
 
         // Load more plugins here
+
+        $this->addPlugin('Authorization'); // ← 権限による条件分岐の実装のための追加
     }
 
     /**
@@ -103,7 +113,11 @@ implements AuthenticationServiceProviderInterface
             // https://book.cakephp.org/4/en/controllers/middleware.html#cross-site-request-forgery-csrf-middleware
             ->add(new CsrfProtectionMiddleware([
                 'httponly' => true,
-            ]));
+            ]))
+            // ↓ 権限による条件分岐の実装のための追加。第２引数「・・・=>false」を入れると基本は認証不要になる。
+            ->add(new AuthorizationMiddleware($this
+              , ['requireAuthorizationCheck' => true]
+              ));
 
         return $middlewareQueue;
     }
@@ -111,6 +125,7 @@ implements AuthenticationServiceProviderInterface
     public function getAuthenticationService(ServerRequestInterface $request): AuthenticationServiceInterface
     {
         $authenticationService = new AuthenticationService([
+          //ユーザーが認証されていない場合にユーザーをリダイレクトする場所を定義します
             'unauthenticatedRedirect' => '/SBS/users/login',
             'queryParam' => 'redirect',
         ]);
@@ -156,5 +171,12 @@ implements AuthenticationServiceProviderInterface
         $this->addPlugin('Migrations');
 
         // Load more plugins here
+    }
+    // ↓  権限による条件分岐の実装のための追加
+    public function getAuthorizationService(ServerRequestInterface $request): AuthorizationServiceInterface
+    {
+        $resolver = new OrmResolver();
+
+        return new AuthorizationService($resolver);
     }
 }

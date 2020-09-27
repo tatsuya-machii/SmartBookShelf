@@ -24,12 +24,21 @@ class CreateUsers extends AbstractMigration
         ->addColumn('email', 'string',[
           'default' => null,
           'limit' => 255,
-          'null' => false,
+          'null' => true,
         ])
         ->addColumn('password', 'string',[
           'default' => null,
           'limit' => 255,
-          'null' => false,
+          'null' => true,
+        ])
+        ->addColumn('temporary_password', 'string',[
+          'default' => null,
+          'limit' => 255,
+          'null' => true,
+        ])
+        ->addColumn('twitter_id', 'biginteger',[
+          'default' => null,
+          'null' => true,
         ])
         ->addColumn('image', 'string',[
           'default' => null,

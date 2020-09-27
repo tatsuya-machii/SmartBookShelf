@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \Cake\Datasource\EntityInterface $post
+ * @var \App\Model\Entity\Post $post
  */
 ?>
 <div class="row">
@@ -18,17 +18,16 @@
     </aside>
     <div class="column-responsive column-80">
         <div class="posts form content">
-          <?= $this->Form->create($post) ?>
+            <?= $this->Form->create($post) ?>
             <fieldset>
                 <legend><?= __('Edit Post') ?></legend>
                 <?php
                     echo $this->Form->control('recommends');
                     echo $this->Form->control('description');
                     echo $this->Form->control('impression');
-                    echo $this->Form->control('user_id');
-                    echo $this->Form->control('book_id');
+                    echo $this->Form->control('user_id', ['options' => $users]);
+                    echo $this->Form->control('book_id', ['options' => $books]);
                 ?>
-
             </fieldset>
             <?= $this->Form->button(__('Submit')) ?>
             <?= $this->Form->end() ?>

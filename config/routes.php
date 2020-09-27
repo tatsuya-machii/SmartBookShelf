@@ -50,7 +50,7 @@ $routes->scope('/', function (RouteBuilder $builder) {
      * its action called 'display', and we pass a param to select the view file
      * to use (in this case, templates/Pages/home.php)...
      */
-     $builder->connect('/', ['controller' => 'users', 'action' => 'login', 'home']);
+     $builder->connect('/', ['controller' => 'users', 'action' => 'main']);
      $builder->connect('/users/', ['controller' => 'users', 'action' => 'main', 'home']);
 
     /*

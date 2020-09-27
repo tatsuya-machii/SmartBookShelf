@@ -1,3 +1,28 @@
+<?php
+
+require "../../vendor/autoload.php";
+use Abraham\TwitterOAuth\TwitterOAuth;
+  // twitter_login
+  if (isset($_GET["twitter_login"])) {
+  // twitter API
+  define('TWITTER_API_KEY', '6f2GcwbdYhwua09KJxiYG2KvN');//Consumer Key (API Key)
+  define('TWITTER_API_SECRET', 'xJTKZ9mN60TaiOvX0jm2eEgN5XIrVRCZJ0alKJ7fxK52cQKWh3');//Consumer Secret (API Secret)
+  define('CALLBACK_URL', 'http://192.168.33.10/SBS/users/callback');//Twitterから認証した時に飛ぶページ場所
+
+  //「abraham/twitteroauth」ライブラリのインスタンスを生成し、Twitterからリクエストトークンを取得する
+  $connection = new TwitterOAuth(TWITTER_API_KEY, TWITTER_API_SECRET);
+  $request_token = $connection->oauth('oauth/request_token', array('oauth_callback' => CALLBACK_URL));
+
+  //リクエストトークンはcallback.phpでも利用するのでセッションに保存する
+  $_SESSION['oauth_token'] = $request_token['oauth_token'];
+  $_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
+  //Twitterの認証画面のURL
+  $oauthUrl = $connection->url('oauth/authorize', array('oauth_token' => $request_token['oauth_token']));
+  header('Location: '.$oauthUrl);
+  exit;
+  }
+
+?>
 <main>
   <div id="login_container">
     <p id="login_index">Smart Book Shelf</p>

@@ -30,6 +30,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
   <?= $this->Html->css(['main', 'base', 'bootstrap']) ?>
   <title>Smart Book Shelf</title>
   <body>
+    <!-- CSRF対策用の記述 -->
+    <input type="hidden" name="_csrfToken" autocomplete="off" value="<?= $this->request->getAttribute('csrfToken') ?>">
+
     <header>
       <h1 class="hidden">Smart_Book_Shelf</h1>
       <!-- bootstrapを使ったヘッダー作成 -->
@@ -47,7 +50,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
               <div class="collapse navbar-collapse" id="gnav">
                   <ul class="nav navbar-nav navbar-right">
                     <?php if ($_SESSION["Auth"]["id"]==1){ ?>
-                      <li><a href="../admin/main.php"><?php echo $_SESSION["Auth"]["username"] ?></a></li>
+                      <li><a href="/SBS/users/main"><?php echo $_SESSION["Auth"]["username"] ?></a></li>
                       <li>
                         <?= $this->Html->link('ログアウト', ['controller' => 'users', 'action' => 'logout', '?' => ['logout' => 1] ]) ?>
                       </li>
@@ -56,10 +59,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
                       <li><?= $this->HTML->link($_SESSION['Auth']['username'], '/users/main') ?></li>
                       <li>
-                        <?= $this->Html->link('投稿一覧', ['controller' => 'posts', 'action' => 'index']) ?>
+                        <?= $this->Html->link('投稿一覧', '/posts/index') ?>
                       </li>
                       <li>
-                        <?= $this->Html->link('ログアウト', ['controller' => 'users', 'action' => 'logout', '?' => ['logout' => 1] ]) ?>
+                        <?= $this->Html->link('ログアウト', '/users/logout?logout=1') ?>
                       </li>
                     <?php }; ?>
                   </ul>

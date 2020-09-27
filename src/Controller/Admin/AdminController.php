@@ -14,7 +14,7 @@ declare(strict_types=1);
  * @since     0.2.9
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use Cake\Controller\Controller;
 
@@ -26,12 +26,14 @@ use Cake\Controller\Controller;
  *
  * @link https://book.cakephp.org/4/en/controllers.html#the-app-controller
  */
-class AppController extends Controller
+class AdminController extends Controller
 {
   public function beforeFilter(\Cake\Event\EventInterface $event)
   {
-      // ↓ 　認証をスキップする
+      // ↓ 管理者のみ認証をスキップできる
+      if ($_SESSION['Auth']['role']== 1) {
         $this->Authorization->skipAuthorization();
+      }
   }
 
     /**

@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Controller\AppController;
+use App\Controller\Admin\AdminController;
 
 /**
  * Books Controller
  *
  * @method \App\Model\Entity\Book[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class BooksController extends AppController
+class BooksController extends AdminController
 {
     /**
      * Index method
