@@ -48,17 +48,15 @@ class PostsTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Users'
-        // , [
-        //     'foreignKey' => 'user_id',
-        //     'joinType' => 'INNER',
-        // ]
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'INNER',
+        ]
         );
-        $this->belongsTo('Books'
-        // , [
-        //     'foreignKey' => 'book_id',
-        //     'joinType' => 'INNER',
-        // ]
+        $this->belongsTo('Books', [
+            'foreignKey' => 'book_id',
+            'joinType' => 'INNER',
+        ]
         );
     }
 

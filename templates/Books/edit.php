@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \Cake\Datasource\EntityInterface $book
+ * @var \App\Model\Entity\Book $book
  */
 ?>
 <div class="row">
@@ -18,14 +18,14 @@
     </aside>
     <div class="column-responsive column-80">
         <div class="books form content">
-            <?= $this->Form->create($book,['type'=>'file']) ?>
+            <?= $this->Form->create($book) ?>
             <fieldset>
                 <legend><?= __('Edit Book') ?></legend>
                 <?php
                     echo $this->Form->control('bookname');
                     echo $this->Form->control('author');
                     echo $this->Form->control('publisher');
-                    echo $this->Form->control('image', ['type'=>'file']);
+                    echo $this->Form->control('image');
                     echo $this->Form->control('status');
                 ?>
             </fieldset>

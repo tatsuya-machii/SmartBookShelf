@@ -19,12 +19,11 @@ $(function(){
       if(data == "already"){
         $('#friend_add')
         .text('友だち解除')
-        .addClass('already');
+        .addClass('already')
       }else{
-        if(data == "success"){
           $('#friend_add')
-          .text('友だちに追加');
-        }
+          .text('友だちに追加')
+
       }
     })
 

@@ -64,7 +64,7 @@ class PostsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
      */
-    public function add()
+    public function add($id=null)
     {
         $post = $this->Posts->newEmptyEntity();
         if ($this->request->is('post')) {
@@ -78,7 +78,9 @@ class PostsController extends AppController
         }
         $users = $this->Users->find('list');
         $books = $this->Books->find('list');
-        $this->set(compact('post', 'users', 'books'));
+        $book = $this->Books->find()->Where(['id'=>$id])->toArray();
+        $book = $book[0];
+        $this->set(compact('post', 'users', 'books', 'book', 'id'));
     }
 
     /**
@@ -189,11 +191,15 @@ class PostsController extends AppController
 
 
             // userimage
-            if ($post['userimage'] == null) {
+            if (!empty($post['userimage']) && file_exists('img/users/'.$post['userimage'])) {
+              $post['userimage'] = '<img src="/SBS/webroot/img/users/'.$post['userimage'].'">';
+            }else{
               $post['userimage'] = '<i class="fas fa-user small_icon"></i>';
             };
-            // userimage
-            if ($post['bookimage'] == null) {
+            // bookimage
+            if (!empty($post['bookimage']) && file_exists('img/books/'.$post['bookimage'])) {
+              $post['bookimage'] = '<img src="/SBS/webroot/img/books/'.$post['bookimage'].'">';
+            }else{
               $post['bookimage'] = '<i class="fas fa-book-open small_icon"></i>';
             };
             // star

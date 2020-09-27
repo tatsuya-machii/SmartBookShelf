@@ -25,8 +25,8 @@
                     echo $this->Form->control('recommends');
                     echo $this->Form->control('description');
                     echo $this->Form->control('impression');
-                    echo $this->Form->control('user_id');
-                    echo $this->Form->control('book_id');
+                    echo $this->Form->control('user_id',['class'=>'hidden', 'value'=>$post['user_id'], 'label'=>false]);
+                    echo $this->Form->control('book_id',['class'=>'hidden', 'value'=>$post['book_id'], 'label'=>false]);
                 ?>
 
             </fieldset>

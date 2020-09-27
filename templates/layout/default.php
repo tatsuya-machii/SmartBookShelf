@@ -27,6 +27,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <?= $this->fetch('title') ?>
     </title>
     <?= $this->Html->meta('icon') ?>
+    <!-- fontawesome読み込み -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
 
 
     <?= $this->Html->css(['normalize.min', 'milligram.min', 'cake']) ?>
